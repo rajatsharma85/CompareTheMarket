@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,49 +14,24 @@ namespace CompareTheMarketTEST
     {
         static void Main(string[] args)
         {
-            
-            string inputFilePath = @"..\..\Data\Book.txt";
-            string outputFilePath = @"..\..\Data\output.csv";
+
+            string inputFilePath = ConfigurationManager.AppSettings["inputFile"];
+            string outputFilePath = ConfigurationManager.AppSettings["outputFile"];
 
             var wordsInBook = ProcessFileToGetWords(inputFilePath);
 
             //Determine if the word count is prime
             foreach (var word in wordsInBook)
             {
-                word.IsPrime = IsNumberPrime(word.Count);
+                word.IsPrime = Helper.IsNumberPrime(word.Count);
             }
 
             //Write the output to a csv file
-            WriteCSV(wordsInBook, outputFilePath);
+            Helper.WriteCSV(wordsInBook, outputFilePath);
             
         }
 
-
-        /// <summary>
-        /// Writes a CSV file from a IEnumerable of any given object of Type T
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="items"></param>
-        /// <param name="path"></param>
-        public static void WriteCSV<T>(IEnumerable<T> items, string path)
-        {
-            Type itemType = typeof(T);
-
-            //Use reflection to get properties to print the name in CSV file
-            var props = itemType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-            using (var writer = new StreamWriter(path))
-            {
-                //Join propertynames using comma
-                writer.WriteLine(string.Join(", ", props.Select(p => p.Name)));
-
-                //Join Values using comma
-                foreach (var item in items)
-                {
-                    writer.WriteLine(string.Join(", ", props.Select(p => p.GetValue(item, null))));
-                }
-            }
-        }
+        
 
         /// <summary>
         /// Processes the input file to read and count the words as you read through
@@ -73,26 +49,31 @@ namespace CompareTheMarketTEST
                 string line;
                 while ((line = sr.ReadLine()) != null)
                 {
-                    //Remove after test
-                    if(string.IsNullOrEmpty(line))
-                    {
-                        break;
-                    }
-                    if (!string.IsNullOrEmpty(line))
-                    {
+                    //Process next line if current one is blank
+                    if (string.IsNullOrEmpty(line))
+                        continue;
+                    
+                       //Split the line to an array based on white space
                         string[] wordsInLine = line.Split(null);
+
+                    try
+                    {
+                        //Iterate through the words in the line
                         foreach (var word in wordsInLine)
                         {
+                            //Ignore blank words
                             if (string.IsNullOrWhiteSpace(word))
                                 continue;
 
-                            var sanitizedWord = SanitizeWord(word);
-                            //Check if word already exists in the list in memory so far
+                            //Remove punctuations
+                            var sanitizedWord = Helper.SanitizeWord(word);
+
+                            //Check if a word already exists in the list in memory so far
                             var x = wordsInBook.Where(w => w.Word == sanitizedWord.ToLowerInvariant())
                                 .ToList()
                                 .SingleOrDefault();
 
-                            //If the word appeared for the first time
+                            //If the word appeared for the first time, add it to the list object
                             if (x == null)
                             {
                                 wordsInBook.Add(new WordInfo
@@ -102,7 +83,7 @@ namespace CompareTheMarketTEST
                                 });
                             }
 
-                            //Increase the count of that word
+                            //If word already exists, just increase the count of that word
                             else
                             {
                                 x.Count += 1;
@@ -110,47 +91,19 @@ namespace CompareTheMarketTEST
                         }
                     }
 
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message, ex.StackTrace);
+                    }
+                    
+
                 }
             }
             return wordsInBook;
         }
 
-        /// <summary>
-        /// Sanitizes a word to remove the punctuation marks
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns>Sanitized string without any punctuation marks</returns>
-        public static string SanitizeWord(string input)
-        {
-            var sb = new StringBuilder();
-            foreach (char c in input)
-            {
-                if (!char.IsPunctuation(c))
-                    sb.Append(c);
-            }
-            return sb.ToString();
-        }
+        
 
-        /// <summary>
-        /// Checks if a number is prime
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns>True or False</returns>
-        public static bool IsNumberPrime(int number)
-        {
-            int i;
-            for (i = 2; i <= number - 1; i++)
-            {
-                if (number % i == 0)
-                {
-                    return false;
-                }
-            }
-            if (i == number)
-            {
-                return true;
-            }
-            return false;
-        }
+       
     }
 }
