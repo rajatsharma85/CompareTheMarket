@@ -77,17 +77,14 @@ namespace CompareTheMarketTEST
                     continue;
 
                 //Split the line to an array based on white space
-                string[] wordsInLine = line.Split(null);
+                string[] wordsInLine = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 try
                 {
                     //Iterate through the words in the line
                     foreach (var word in wordsInLine)
                     {
-                        //Ignore blank words
-                        if (string.IsNullOrWhiteSpace(word))
-                            continue;
-
+                        
                         //Remove punctuations
                         var sanitizedWord = Helper.SanitizeWord(word);
 
@@ -120,10 +117,7 @@ namespace CompareTheMarketTEST
                 }
 
             }
-            s.Stop();
-            Console.WriteLine("Time taken to process the file is: {0}", s.Elapsed);
-
-
+           
             //Arrange by highest count first
             return wordsInBook.OrderByDescending(x => x.Count);
         }
@@ -143,14 +137,11 @@ namespace CompareTheMarketTEST
             // the method for line by line reading will perform better
             string bookText = File.ReadAllText(inputFilePath, Encoding.UTF8);
 
-            string[] allWords = bookText.Split(null);
+            string[] allWords = bookText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var word in allWords)
             {
-                //Ignore blank words
-                if (string.IsNullOrWhiteSpace(word))
-                    continue;
-
+                
                 //Remove punctuations
                 var sanitizedWord = Helper.SanitizeWord(word);
 
@@ -174,10 +165,6 @@ namespace CompareTheMarketTEST
                     wordRef.Count += 1;
                 }
             }
-
-            s.Stop();
-            Console.WriteLine("Time taken to process the file with Read All Text is: {0}", s.Elapsed);
-
 
             //Arrange by highest count first
             return wordsInBook.OrderByDescending(x => x.Count);
