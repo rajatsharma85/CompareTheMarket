@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\Book.txt" />
+    <Content Include="Data\InputTextFile.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

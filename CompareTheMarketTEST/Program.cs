@@ -23,7 +23,7 @@ namespace CompareTheMarketTEST
             //Determine if the word count is prime
             foreach (var word in wordsInBook)
             {
-                word.IsPrime = Helper.IsNumberPrime(word.Count);
+                word.IsPrime = word.IsNumberPrime(word.Count);
             }
             Console.WriteLine("Finished checking if the count of the word is prime!{0}", Environment.NewLine);
             
@@ -50,6 +50,9 @@ namespace CompareTheMarketTEST
         {
             
             var wordsInBook = new List<WordInfo>();
+
+            //Use a stream reader and read line by line and do operations
+            //rather than reading all of it into memory at once
             using (FileStream fs = File.Open(inputFilePath, FileMode.Open, 
                 FileAccess.Read, FileShare.ReadWrite))
             using (StreamReader sr = new StreamReader(fs))
@@ -100,7 +103,8 @@ namespace CompareTheMarketTEST
 
                     catch(Exception ex)
                     {
-                        Console.WriteLine(ex.Message, ex.StackTrace);
+                        Console.WriteLine("An error occured. Message:{0} {1} Stack Trace: {2}", 
+                            ex.Message, Environment.NewLine, ex.StackTrace);
                     }
                     
 
