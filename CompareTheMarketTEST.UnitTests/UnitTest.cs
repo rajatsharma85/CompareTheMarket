@@ -52,21 +52,58 @@ namespace CompareTheMarketTEST.UnitTests
 
             //Act
             Helper.WriteCSV(wordList, outputPath);
-            Program.ProcessFileToGetWords(outputPath);
 
             //Assert
             Assert.IsTrue(File.Exists(outputPath), "Could not write to csv file");
         }
 
-        
         [TestMethod]
-        public void Process_Text_File()
+        public void Process_Smaller_Text_File_Read_All_At_Once()
         {
             //Arrange
             string inputPath = @"..\..\InputTextFile.txt";
 
             //Act
-            var result = Program.ProcessFileToGetWords(inputPath);
+            var result = Program.ProcessFileToGetWords_ReadAllAtOnce(inputPath);
+
+            //Assert
+            Assert.IsNotNull(result, "Could not process the text file.");
+        }
+
+        [TestMethod]
+        public void Process_Smaller_Text_File_Read_Line_By_Line()
+        {
+            //Arrange
+            string inputPath = @"..\..\InputTextFile.txt";
+
+            //Act
+            var result = Program.ProcessFileToGetWords_ReadLineByLine(inputPath);
+
+            //Assert
+            Assert.IsNotNull(result, "Could not process the text file.");
+        }
+
+        [TestMethod]
+        public void Process_Large_Text_File_Read_All_At_Once()
+        {
+            //Arrange
+            string inputPath = @"..\..\InputTextFileLarge.txt";
+
+            //Act
+            var result = Program.ProcessFileToGetWords_ReadAllAtOnce(inputPath);
+
+            //Assert
+            Assert.IsNotNull(result, "Could not process the text file.");
+        }
+
+        [TestMethod]
+        public void Process_Large_Text_File_Read_Line_By_Line()
+        {
+            //Arrange
+            string inputPath = @"..\..\InputTextFileLarge.txt";
+
+            //Act
+            var result = Program.ProcessFileToGetWords_ReadLineByLine(inputPath);
 
             //Assert
             Assert.IsNotNull(result, "Could not process the text file.");
