@@ -13,7 +13,6 @@ namespace CompareTheMarketTEST
     {
         static void Main(string[] args)
         {
-
             string inputFilePath = ConfigurationManager.AppSettings["inputFile"];
             string outputFilePath = ConfigurationManager.AppSettings["outputFile"];
 
@@ -35,14 +34,12 @@ namespace CompareTheMarketTEST
             }
             Console.WriteLine("Finished checking if the count of the word is prime!{0}", Environment.NewLine);
 
-
             Console.WriteLine("Started writing to output csv file...");
             //Write the output to a csv file
             Helper.WriteCSV(wordsInBook, outputFilePath);
             Console.WriteLine("Finished writing to file!{0}", Environment.NewLine);
 
             Console.WriteLine("Press enter to continue. The output file will be in the \"Data\" folder.");
-
             Console.Read();
         }
 
@@ -57,10 +54,6 @@ namespace CompareTheMarketTEST
         {
 
             var wordsInBook = new List<WordInfo>();
-
-
-            Stopwatch s = new Stopwatch();
-            s.Start();
 
             //Use a stream reader and read line by line and do operations
             //rather than reading all of it into memory at once
